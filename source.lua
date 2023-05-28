@@ -151,7 +151,7 @@ local window = {}; do
 			self.UI.Enabled = false
 		end)
 		userInputService.InputBegan:Connect(function(input)
-			if input.KeyCode == Enum.KeyCode.RightControl then
+			if input.KeyCode == Enum.KeyCode.Tab then
 				self.UI.Enabled = true
 			end
 		end)
@@ -234,7 +234,7 @@ local window = {}; do
 end
 
 function relinquish:CreateWindow(data)
-	local items = game:GetObjects("rbxassetid://13574582142")[1]
+	local items = game:GetObjects("rbxassetid://13575295739")[1]
 	local nwWindow = setmetatable({}, window)
 	nwWindow.Props = items.Props
 	nwWindow.UI = items.RelinquishUI
