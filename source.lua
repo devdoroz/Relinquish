@@ -118,6 +118,8 @@ local window = {}; do
 			
 			self.Children[#self.Children + 1] = sliderClone
 			
+			refresh()
+			
 			return {
 				Set = function(value)
 					data.CurrentValue = value
