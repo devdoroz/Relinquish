@@ -4,15 +4,6 @@ local userInputService = game:GetService("UserInputService")
 local tweenService = game:GetService("TweenService")
 local debris = game:GetService("Debris")
 
-local function convertTableFunctionsIntoMethods(t)
-	local nwT = {}
-	for index, value in pairs(t) do
-		function nwT:index()
-			
-		end
-	end
-end
-
 local window = {}; do
 	local tab = {}; do
 		tab.__index = tab
