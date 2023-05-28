@@ -133,6 +133,7 @@ local window = {}; do
 			minimized = not minimized
 			if minimized then
 				self.UI.Main.BackgroundTransparency = 1
+				self.UI.Main.DropShadowHolder.Visible = false
 				for index, element in pairs(self.UI.Main.Core:GetChildren()) do
 					if element.Name ~= "Topbar" then
 						element.Visible = false
@@ -140,6 +141,7 @@ local window = {}; do
 				end
 			else
 				self.UI.Main.BackgroundTransparency = 0
+				self.UI.Main.DropShadowHolder.Visible = true
 				for index, element in pairs(self.UI.Main.Core:GetChildren()) do
 					if element.Name ~= "Topbar" then
 						element.Visible = true
