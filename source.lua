@@ -296,7 +296,7 @@ local window = {}; do
 end
 
 function relinquish:CreateWindow(data)
-	local items = game:GetObjects("rbxassetid://13582397593")[1]
+	local items = game:GetObjects("rbxassetid://13582622229")[1]
 	local nwWindow = setmetatable({}, window)
 	nwWindow.Props = items.Props
 	nwWindow.UI = items.RelinquishUI
