@@ -63,6 +63,64 @@ local window = {}; do
 				end,
 			}
 		end
+		function tab:CreateDropdown(data)
+			local shown = false
+			local dropdownClone = self.Parent.Props.Dropdown:Clone()
+			dropdownClone.Title.Text = data.Name
+			
+			local function refresh()
+				dropdownClone.Dropdown.Selected.Text = data.CurrentOption
+				data.Callback(data.CurrentOption)
+			end
+			
+			local function showDropdown()
+				dropdownClone.Dropdown.List.Visible = true
+				dropdownClone.Dropdown.Arrow.Image = "rbxassetid://13582361562"
+			end
+
+			local function hideDropdown()
+				dropdownClone.Dropdown.List.Visible = false
+				dropdownClone.Dropdown.Arrow.Image = "rbxassetid://13582137949"
+			end
+			
+			local function createSelection(option)
+				local dropdownText = self.Parent.Props.DropdownText:Clone()
+				dropdownClone.Dropdown.List.Size += UDim2.new(0, 0, 0, 22)
+				dropdownText.Text = option
+				dropdownText.Parent = dropdownClone.Dropdown.List
+				dropdownText.MouseButton1Click:Connect(function()
+					shown = false
+					hideDropdown()
+					data.CurrentOption = option
+					refresh()
+				end)
+			end
+			
+			local stateFunc = {
+				[false] = hideDropdown,
+				[true] = showDropdown,
+			}
+			
+			for index, option in pairs(data.Options) do
+				createSelection(option)
+			end
+			
+			dropdownClone.Dropdown.Arrow.MouseButton1Click:Connect(function()
+				shown = not shown
+				stateFunc[shown]()
+			end)
+			
+			refresh()
+			
+			self.Children[#self.Children + 1] = dropdownClone
+			
+			return {
+				Set = function(v)
+					data.CurrentOption = v
+					refresh()
+				end,
+			}
+		end
 		function tab:CreateSlider(data)
 			local rangeMin = data.Range[1]
 			local rangeMax = data.Range[2]
@@ -238,7 +296,7 @@ local window = {}; do
 end
 
 function relinquish:CreateWindow(data)
-	local items = game:GetObjects("rbxassetid://13575295739")[1]
+	local items = game:GetObjects("rbxassetid://13582397593")[1]
 	local nwWindow = setmetatable({}, window)
 	nwWindow.Props = items.Props
 	nwWindow.UI = items.RelinquishUI
