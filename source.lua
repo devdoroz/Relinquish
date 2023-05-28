@@ -128,6 +128,33 @@ local window = {}; do
 	end
 	window.__index = window
 	function window:Init()
+		local minimized = false
+		self.UI.Main.Core.Topbar.MinimizeButton.MouseButton1Click:Connect(function()
+			minimized = not minimized
+			if minimized then
+				self.UI.Main.BackgroundTransparency = 1
+				for index, element in pairs(self.UI.Main.Core:GetChildren()) do
+					if element.Name ~= "Topbar" then
+						element.Visible = false
+					end
+				end
+			else
+				self.UI.Main.BackgroundTransparency = 0
+				for index, element in pairs(self.UI.Main.Core:GetChildren()) do
+					if element.Name ~= "Topbar" then
+						element.Visible = true
+					end
+				end
+			end
+		end)
+		self.UI.Main.Core.Topbar.CloseButton.MouseButton1Click:Connect(function()
+			self.UI.Enabled = false
+		end)
+		userInputService.InputBegan:Connect(function(input)
+			if input.KeyCode == Enum.KeyCode.RightControl then
+				self.UI.Enabled = true
+			end
+		end)
 		self.UI.Main.Introduction.Title.Text = self.Data.LoadingTitle
 		self.UI.Main.Introduction.Description.Text = self.Data.LoadingDescription
 		self.UI.Main.Core.Topbar.Title.Text = self.Data.Title
