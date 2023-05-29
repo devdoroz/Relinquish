@@ -294,37 +294,43 @@ local window = {}; do
 		return tab
 	end
 	function window:Notify(data)
-		local function addTweenToQueue(tween)
-			table.insert(self.NotifyTweens, tween)
-			tween.Completed:Wait()
-			table.remove(self.NotifyTweens, table.find(self.NotifyTweens, tween))
-		end
-		local notificationClone = self.Props.Notification:Clone()
-		notificationClone.Frame.NotificationTitle.Text = data.Title
-		notificationClone.NotificationText.Text = data.Content
-		local tInfo = TweenInfo.new(0.5, Enum.EasingStyle.Cubic, Enum.EasingDirection.InOut, 0, false, 0)
-		local notifShowTween = tweenService:Create(notificationClone, tInfo, {Position = UDim2.new(0, 0, 1, 0)})
-		local notifHideTween = tweenService:Create(notificationClone, tInfo, {Position = UDim2.new(1.2, 0, notificationClone.Position.Y.Scale, 0)})
-		local function upNotifs()
-			repeat task.wait() until #self.NotifyTweens <= 0
-			for index, notification in pairs(self.UI.Notifications:GetChildren()) do
-				local t = tweenService:Create(notification, tInfo, {Position = notification.Position - UDim2.new(0, 0, 0.17, 0)})
-				t:Play()
-				addTweenToQueue(t)
-			end
-		end
-		local function downNotifs()
-			for index, notification in pairs(self.UI.Notifications:GetChildren()) do
-				local t = tweenService:Create(notification, tInfo, {Position = notification.Position + UDim2.new(0, 0, 0.17, 0)})
-				t:Play()
-				addTweenToQueue(t)
-			end
-		end
-		upNotifs()
-		notificationClone.Parent = self.UI.Notifications
-		notifShowTween:Play()
 		task.spawn(function()
+			local function addTweenToQueue(tween)
+				table.insert(self.NotifyTweens, tween)
+				task.spawn(function()
+					tween.Completed:Wait()
+					table.remove(self.NotifyTweens, table.find(self.NotifyTweens, tween))
+				end)
+			end
+			local notificationClone = self.Props.Notification:Clone()
+			notificationClone.Frame.NotificationTitle.Text = data.Title
+			notificationClone.NotificationText.Text = data.Content
+			local tInfo = TweenInfo.new(0.5, Enum.EasingStyle.Cubic, Enum.EasingDirection.InOut, 0, false, 0)
+			local notifShowTween = tweenService:Create(notificationClone, tInfo, {Position = UDim2.new(0, 0, 1, 0)})
+			local notifHideTween = tweenService:Create(notificationClone, tInfo, {Position = UDim2.new(1.2, 0, notificationClone.Position.Y.Scale, 0)})
+			local function upNotifs()
+				repeat task.wait() until #self.NotifyTweens <= 0
+				for index, notification in pairs(self.UI.Notifications:GetChildren()) do
+					if notification:GetAttribute("Ended") then continue end
+					local t = tweenService:Create(notification, tInfo, {Position = notification.Position - UDim2.new(0, 0, 0.17, 0)})
+					t:Play()
+					addTweenToQueue(t)
+				end
+			end
+			local function downNotifs()
+				repeat task.wait() until #self.NotifyTweens <= 0
+				for index, notification in pairs(self.UI.Notifications:GetChildren()) do
+					if notification:GetAttribute("Ended") then continue end
+					local t = tweenService:Create(notification, tInfo, {Position = notification.Position + UDim2.new(0, 0, 0.17, 0)})
+					t:Play()
+					addTweenToQueue(t)
+				end
+			end
+			upNotifs()
+			notificationClone.Parent = self.UI.Notifications
+			notifShowTween:Play()
 			task.wait(data.Duration)
+			notificationClone:SetAttribute("Ended", true)
 			notifHideTween:Play()
 			downNotifs()
 			notifHideTween.Completed:Wait()
@@ -395,4 +401,16 @@ function relinquish:CreateWindow(data)
 	return nwWindow
 end
 
-return relinquish
+local w = relinquish:CreateWindow({
+	LoadingTitle = "wihub",
+	LoadingDescription = "by fishy",
+	Title = "WiiHub"
+})
+
+_G.Notify = function()
+	w:Notify({
+		Content = "This is a Notification",
+		Duration = 4,
+		Title = "Notification"
+	})
+end
