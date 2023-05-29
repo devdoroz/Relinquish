@@ -294,6 +294,11 @@ local window = {}; do
 		return tab
 	end
 	function window:Notify(data)
+		local function addTweenToQueue(tween)
+			table.insert(self.NotifyTweens, tween)
+			tween.Completed:Wait()
+			table.remove(self.NotifyTweens, table.find(self.NotifyTweens, tween))
+		end
 		local notificationClone = self.Props.Notification:Clone()
 		notificationClone.Frame.NotificationTitle.Text = data.Title
 		notificationClone.NotificationText.Text = data.Content
@@ -301,34 +306,30 @@ local window = {}; do
 		local notifShowTween = tweenService:Create(notificationClone, tInfo, {Position = UDim2.new(0, 0, 1, 0)})
 		local notifHideTween = tweenService:Create(notificationClone, tInfo, {Position = UDim2.new(1.2, 0, notificationClone.Position.Y.Scale, 0)})
 		local function upNotifs()
-			repeat task.wait() until not self.NotifyTween
-			self.NotifyTween = true
+			repeat task.wait() until #self.NotifyTweens <= 0
 			for index, notification in pairs(self.UI.Notifications:GetChildren()) do
 				local t = tweenService:Create(notification, tInfo, {Position = notification.Position - UDim2.new(0, 0, 0.17, 0)})
 				t:Play()
+				addTweenToQueue(t)
 			end
-			task.spawn(function()
-				task.wait(0.5)
-				self.NotifyTween = false
-			end)
 		end
 		local function downNotifs()
-			repeat task.wait() until not self.NotifyTween
 			for index, notification in pairs(self.UI.Notifications:GetChildren()) do
 				local t = tweenService:Create(notification, tInfo, {Position = notification.Position + UDim2.new(0, 0, 0.17, 0)})
 				t:Play()
+				addTweenToQueue(t)
 			end
 		end
 		upNotifs()
 		notificationClone.Parent = self.UI.Notifications
 		notifShowTween:Play()
+		addTweenToQueue(notifShowTween)
 		task.spawn(function()
 			task.wait(data.Duration)
-			self.NotifyTween = true
 			notifHideTween:Play()
 			downNotifs()
+			addTweenToQueue(notifHideTween)
 			notifHideTween.Completed:Wait()
-			self.NotifyTween = false
 			notificationClone:Destroy()
 		end)
 	end
@@ -340,7 +341,7 @@ function relinquish:CreateWindow(data)
 	nwWindow.Props = items.Props
 	nwWindow.UI = items.RelinquishUI
 	nwWindow.Data = data
-	nwWindow.NotifyTween = false
+	nwWindow.NotifyTweens = {}
 	nwWindow.LastTab = nil
 	do
 		local gui = nwWindow.UI.Main
