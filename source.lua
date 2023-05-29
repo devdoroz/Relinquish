@@ -406,16 +406,4 @@ function relinquish:CreateWindow(data)
 	return nwWindow
 end
 
-local w = relinquish:CreateWindow({
-	LoadingTitle = "wihub",
-	LoadingDescription = "by fishy",
-	Title = "WiiHub"
-})
-
-_G.Notify = function()
-	w:Notify({
-		Content = "This is a Notification",
-		Duration = 4,
-		Title = "Notification"
-	})
-end
+return relinquish
