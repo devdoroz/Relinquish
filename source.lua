@@ -215,11 +215,11 @@ local window = {}; do
 				Content = "Press TAB to re-open ui.",
 				Duration = 4
 			})
-			self.UI.Enabled = false
+			self.UI.Main.Visible = false
 		end)
 		userInputService.InputBegan:Connect(function(input)
 			if input.KeyCode == Enum.KeyCode.Tab then
-				self.UI.Enabled = true
+				self.UI.Main.Visible = true
 			end
 		end)
 		self.UI.Main.Introduction.Title.Text = self.Data.LoadingTitle
