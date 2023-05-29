@@ -293,10 +293,38 @@ local window = {}; do
 		tab.Parent = self
 		return tab
 	end
+	function window:Notify(data)
+		local notificationClone = self.Props.Notification:Clone()
+		notificationClone.Frame.NotificationTitle.Text = data.Title
+		notificationClone.NotificationText.Text = data.Content
+		local tInfo = TweenInfo.new(0.5, Enum.EasingStyle.Cubic, Enum.EasingDirection.InOut, 0, false, 0)
+		local notifShowTween = tweenService:Create(notificationClone, tInfo, {Position = UDim2.new(0, 0, 1, 0)})
+		local notifHideTween = tweenService:Create(notificationClone, tInfo, {Position = UDim2.new(1.2, 0, notificationClone.Position.Y.Scale, 0)})
+		local function upNotifs()
+			for index, notification in pairs(self.UI.Notifications:GetChildren()) do
+				local t = tweenService:Create(notification, tInfo, {Position = notification.Position + UDim2.new(0, 0, 0.17, 0)})
+				t:Play()
+			end
+		end
+		local function downNotifs()
+			for index, notification in pairs(self.UI.Notifications:GetChildren()) do
+				local t = tweenService:Create(notification, tInfo, {Position = notification.Position - UDim2.new(0, 0, 0.17, 0)})
+				t:Play()
+			end
+		end
+		upNotifs()
+		notificationClone.Parent = self.UI.Notifications
+		notifShowTween:Play()
+		task.spawn(function()
+			task.wait(data.Duration)
+			notifHideTween:Play()
+			downNotifs()
+		end)
+	end
 end
 
 function relinquish:CreateWindow(data)
-	local items = game:GetObjects("rbxassetid://13582653944")[1]
+	local items = game:GetObjects("rbxassetid://13583766346")[1]
 	local nwWindow = setmetatable({}, window)
 	nwWindow.Props = items.Props
 	nwWindow.UI = items.RelinquishUI
