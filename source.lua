@@ -326,6 +326,7 @@ local window = {}; do
 				repeat task.wait() until #self.NotifyTweens <= 0
 				for index, notification in pairs(self.UI.Notifications:GetChildren()) do
 					if notification:GetAttribute("Ended") then continue end
+					if notificationClone.Position.Y.Scale > notification.Position.Y.Scale then continue end
 					local t = tweenService:Create(notification, tInfo, {Position = notification.Position + UDim2.new(0, 0, 0.17, 0)})
 					t:Play()
 					addTweenToQueue(t)
