@@ -210,6 +210,11 @@ local window = {}; do
 			end
 		end)
 		self.UI.Main.Core.Topbar.CloseButton.MouseButton1Click:Connect(function()
+			self:Notify({
+				Title = "Relinquish UI",
+				Content = "Press TAB to re-open ui.",
+				Duration = 4
+			})
 			self.UI.Enabled = false
 		end)
 		userInputService.InputBegan:Connect(function(input)
