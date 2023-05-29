@@ -319,6 +319,8 @@ local window = {}; do
 			task.wait(data.Duration)
 			notifHideTween:Play()
 			downNotifs()
+			notifShowTween.Completed:Wait()
+			notificationClone:Destroy()
 		end)
 	end
 end
