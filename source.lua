@@ -323,12 +323,10 @@ local window = {}; do
 		upNotifs()
 		notificationClone.Parent = self.UI.Notifications
 		notifShowTween:Play()
-		addTweenToQueue(notifShowTween)
 		task.spawn(function()
 			task.wait(data.Duration)
 			notifHideTween:Play()
 			downNotifs()
-			addTweenToQueue(notifHideTween)
 			notifHideTween.Completed:Wait()
 			notificationClone:Destroy()
 		end)
